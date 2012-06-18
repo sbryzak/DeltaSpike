@@ -28,6 +28,8 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
  */
 public class ArchiveUtils
 {
+    private ArchiveUtils() { }
+    
     public static JavaArchive[] getDeltaSpikeCoreAndSecurityArchive()
     {
         //X TODO remove this workaround
