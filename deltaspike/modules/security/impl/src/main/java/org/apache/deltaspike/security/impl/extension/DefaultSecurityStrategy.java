@@ -16,31 +16,38 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.deltaspike.security.impl.authorization;
+package org.apache.deltaspike.security.impl.extension;
 
 import org.apache.deltaspike.security.spi.authorization.SecurityStrategy;
 
-import javax.inject.Inject;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
+import javax.enterprise.context.Dependent;
 import javax.interceptor.InvocationContext;
-import java.io.Serializable;
+import java.lang.reflect.Method;
 
 /**
- * Interceptor for {@link SecurityInterceptorBinding} - details see {@link SecurityStrategy}
+ * {@inheritDoc}
  */
-@SecurityInterceptorBinding
-@Interceptor
-public class SecurityInterceptor implements Serializable
+@Dependent
+@SuppressWarnings("UnusedDeclaration")
+public class DefaultSecurityStrategy implements SecurityStrategy
 {
-    private static final long serialVersionUID = -7094673146532371976L;
+    private static final long serialVersionUID = 7992336651801599079L;
 
-    @Inject
-    private SecurityStrategy securityStrategy;
-
-    @AroundInvoke
-    public Object filterDeniedInvocations(InvocationContext invocationContext) throws Exception
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object execute(InvocationContext invocationContext) throws Exception
     {
-        return this.securityStrategy.execute(invocationContext);
+        Method method = invocationContext.getMethod();
+
+        SecurityMetaDataStorage metaDataStorage = SecurityExtension.getMetaDataStorage();
+
+        for (Authorizer authorizer : metaDataStorage.getAuthorizers(invocationContext.getTarget().getClass(), method))
+        {
+            authorizer.authorize(invocationContext);
+        }
+
+        return invocationContext.proceed();
     }
 }

@@ -41,69 +41,70 @@ import javax.enterprise.inject.spi.Extension;
 @RunWith(Arquillian.class)
 public class SecurityParameterBindingTest
 {
-   @Deployment
-   public static WebArchive deploy()
-   {
-      new BeanManagerProvider()
-      {
-         @Override
-         public void setTestMode()
-         {
-            super.setTestMode();
-         }
-      }.setTestMode();
+    @Deployment
+    public static WebArchive deploy()
+    {
+        new BeanManagerProvider()
+        {
+            @Override
+            public void setTestMode()
+            {
+                super.setTestMode();
+            }
+        }
+            .setTestMode();
 
-      JavaArchive testJar = ShrinkWrap
-               .create(JavaArchive.class, SecurityParameterBindingTest.class.getSimpleName() + ".jar")
-               .addPackage(SecurityParameterBindingTest.class.getPackage().getName())
-               .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+        JavaArchive testJar = ShrinkWrap
+            .create(JavaArchive.class, SecurityParameterBindingTest.class.getSimpleName() + ".jar")
+            .addPackage(SecurityParameterBindingTest.class.getPackage().getName())
+            .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
 
-      return ShrinkWrap.create(WebArchive.class)
-               .addAsLibraries(ArchiveUtils.getDeltaSpikeCoreAndSecurityArchive())
-               .addAsLibraries(testJar)
-               .addAsServiceProvider(Extension.class, ExcludeExtension.class)
-               .addAsWebInfResource(ArchiveUtils.getBeansXml(), "beans.xml");
-   }
+        return ShrinkWrap.create(WebArchive.class)
+            .addAsLibraries(ArchiveUtils.getDeltaSpikeCoreAndSecurityArchive())
+            .addAsLibraries(testJar)
+            .addAsServiceProvider(Extension.class, ExcludeExtension.class)
+            .addAsWebInfResource(ArchiveUtils.getBeansXml(), "beans.xml");
+    }
 
-   @Test(expected = IllegalStateException.class)
-   public void simpleInterceptorThrowsExceptionWhenImproperlyAnnotated()
-   {
-      SecuredBean1 testBean = BeanProvider.getContextualReference(SecuredBean1.class, false);
-      testBean.getResult(new MockObject(true));
-   }
+    @Test(expected = IllegalStateException.class)
+    public void simpleInterceptorThrowsExceptionWhenImproperlyAnnotated()
+    {
+        SecuredBean1 testBean = BeanProvider.getContextualReference(SecuredBean1.class, false);
+        testBean.getResult(new MockObject(true));
+    }
 
-   @Test(expected = AccessDeniedException.class)
-   public void simpleInterceptorDeniesTest()
-   {
-      SecuredBean1 testBean = BeanProvider.getContextualReference(SecuredBean1.class, false);
-      testBean.getBlockedResult(new MockObject(false));
-   }
+    @Test(expected = AccessDeniedException.class)
+    public void simpleInterceptorDeniesTest()
+    {
+        SecuredBean1 testBean = BeanProvider.getContextualReference(SecuredBean1.class, false);
+        testBean.getBlockedResult(new MockObject(false));
+    }
 
-   @Test
-   public void simpleInterceptorAllowsTest()
-   {
-      SecuredBean1 testBean = BeanProvider.getContextualReference(SecuredBean1.class, false);
-      Assert.assertTrue(testBean.getBlockedResult(new MockObject(true)));
-   }
+    @Test
+    public void simpleInterceptorAllowsTest()
+    {
+        SecuredBean1 testBean = BeanProvider.getContextualReference(SecuredBean1.class, false);
+        Assert.assertTrue(testBean.getBlockedResult(new MockObject(true)));
+    }
 
-   @Test
-   public void simpleInterceptorIgnoresUnsecuredMethods()
-   {
-      SecuredBean2 testBean = BeanProvider.getContextualReference(SecuredBean2.class, false);
-      Assert.assertTrue(testBean.getResult(new MockObject(true)));
-   }
+    @Test
+    public void simpleInterceptorIgnoresUnsecuredMethods()
+    {
+        SecuredBean2 testBean = BeanProvider.getContextualReference(SecuredBean2.class, false);
+        Assert.assertTrue(testBean.getResult(new MockObject(true)));
+    }
 
-   @Test(expected = AccessDeniedException.class)
-   public void simpleInterceptorTestOnMethodsDenies()
-   {
-      SecuredBean2 testBean = BeanProvider.getContextualReference(SecuredBean2.class, false);
-      testBean.getBlockedResult(new MockObject(false));
-   }
+    @Test(expected = AccessDeniedException.class)
+    public void simpleInterceptorTestOnMethodsDenies()
+    {
+        SecuredBean2 testBean = BeanProvider.getContextualReference(SecuredBean2.class, false);
+        testBean.getBlockedResult(new MockObject(false));
+    }
 
-   @Test
-   public void simpleInterceptorTestOnMethodsAllows()
-   {
-      SecuredBean2 testBean = BeanProvider.getContextualReference(SecuredBean2.class, false);
-      Assert.assertTrue(testBean.getBlockedResult(new MockObject(true)));
-   }
+    @Test
+    public void simpleInterceptorTestOnMethodsAllows()
+    {
+        SecuredBean2 testBean = BeanProvider.getContextualReference(SecuredBean2.class, false);
+        Assert.assertTrue(testBean.getBlockedResult(new MockObject(true)));
+    }
 }

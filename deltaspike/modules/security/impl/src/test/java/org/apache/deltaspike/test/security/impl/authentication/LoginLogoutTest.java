@@ -70,7 +70,7 @@ public class LoginLogoutTest
                 super.setTestMode();
             }
         }
-        .setTestMode();
+            .setTestMode();
 
         JavaArchive testJar = ShrinkWrap.create(JavaArchive.class, "loginLogoutTest.jar")
                 .addPackage("org.apache.deltaspike.test.security.impl.authentication")

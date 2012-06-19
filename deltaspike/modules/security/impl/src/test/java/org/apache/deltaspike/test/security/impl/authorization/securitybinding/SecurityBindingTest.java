@@ -52,7 +52,8 @@ public class SecurityBindingTest
             {
                 super.setTestMode();
             }
-        }.setTestMode();
+        }
+            .setTestMode();
 
         JavaArchive testJar = ShrinkWrap.create(JavaArchive.class, SecurityBindingTest.class.getSimpleName() + ".jar")
                 .addPackage(SecurityBindingTest.class.getPackage().getName())

@@ -51,7 +51,8 @@ public class SecuredAnnotationTest
             {
                 super.setTestMode();
             }
-        }.setTestMode();
+        }
+            .setTestMode();
 
         JavaArchive testJar = ShrinkWrap.create(JavaArchive.class, "securedAnnotationTest.jar")
                 .addPackage("org.apache.deltaspike.test.security.impl.authorization.secured")
