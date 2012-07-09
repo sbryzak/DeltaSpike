@@ -44,6 +44,7 @@ import org.apache.deltaspike.core.util.ClassUtils;
  * <p>Usage:<p/>
  * <pre>
  * BeanManager bm = BeanManagerProvider.getInstance().getBeanManager();
+ * 
  * </pre>
  */
 public class BeanManagerProvider implements Extension
